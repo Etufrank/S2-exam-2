@@ -1,9 +1,9 @@
 <?php
 function connexionBDD() {
     $host = "localhost";
-    $user = "root";
-    $pass = "";
-    $db = "WEBS2";
+    $user = "ETU004223";
+    $pass = "8kEa3yOe";
+    $db = "db_s2_ETU004223";
     $conn = mysqli_connect($host, $user, $pass, $db);
     if (!$conn) {
         die("Connexion echouee : " . mysqli_connect_error());
