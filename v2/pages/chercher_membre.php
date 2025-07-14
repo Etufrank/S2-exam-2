@@ -56,19 +56,6 @@ $membres = chercherMembres($nom_recherche);
         <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
     </form>
 
-    <?php if ($membres && mysqli_num_rows($membres) > 0): ?>
-        <ul class="list-group">
-            <?php while ($m = mysqli_fetch_assoc($membres)): ?>
-                <li class="list-group-item">
-                    <a href="voir_membre.php?id=<?= $m['id_membre'] ?>">
-                        <?= ($m['nom']) ?>
-                    </a>
-                </li>
-            <?php endwhile; ?>
-        </ul>
-    <?php else: ?>
-        <p>Aucun membre trouvé.</p>
-    <?php endif; ?>
 </main>
 </body>
 </html>
