@@ -56,7 +56,7 @@ $cat_res = getCategories();
                 <option value="">-- Toutes les catégories --</option>
                 <?php while ($cat = mysqli_fetch_assoc($cat_res)): ?>
                     <option value="<?= $cat['id_categorie'] ?>" <?= ($filtre_categorie == $cat['id_categorie']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($cat['nom_categorie']) ?>
+                        <?= ($cat['nom_categorie']) ?>
                     </option>
                 <?php endwhile; ?>
             </select>
@@ -64,7 +64,7 @@ $cat_res = getCategories();
 
         <div>
             <label for="nom">Nom de l’objet :</label>
-            <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($filtre_nom) ?>" class="form-control">
+            <input type="text" name="nom" id="nom" value="<?= ($filtre_nom) ?>" class="form-control">
         </div>
 
         <div class="form-check mt-4">
@@ -77,32 +77,35 @@ $cat_res = getCategories();
         </div>
     </form>
 
-    <section>
-        <?php while ($obj = mysqli_fetch_assoc($res)): ?>
-            <a href="details_objets.php?id=<?= $obj["id_objet"] ?>" class="objet-link text-decoration-none text-dark">
-                <div class="objet border p-3 mb-3 rounded">
-                    <h2><?= htmlspecialchars($obj["nom_objet"]) ?></h2>
-                    <p>Catégorie : <?= htmlspecialchars($obj["nom_categorie"]) ?></p>
+    <section class="row">
+    <?php while ($obj = mysqli_fetch_assoc($res)): ?>
+        <div class="col-md-4 mb-4">
+            <div class="border rounded p-3 h-100">
+                <h2><?= ($obj["nom_objet"]) ?></h2>
+                <p>Catégorie : <?= ($obj["nom_categorie"]) ?></p>
 
-                    <?php 
-                        $images_res = getImagesObjet($obj["id_objet"]);
-                        if ($images_res && mysqli_num_rows($images_res) > 0) {
-                            $image = mysqli_fetch_assoc($images_res);
-                            echo '<img src="../uploads/' . htmlspecialchars($image['nom_image']) . '" alt="Image de ' . htmlspecialchars($obj["nom_objet"]) . '" style="max-width:200px; display:block; margin-bottom:10px;">';
-                        } else {
-                            echo '<img src="../assets/default.png" alt="Image par défaut" style="max-width:200px; display:block; margin-bottom:10px;">';
-                        }
-                    ?>
+                <?php 
+                    $images_res = getImagesObjet($obj["id_objet"]);
+                    if ($images_res && mysqli_num_rows($images_res) > 0) {
+                        $image = mysqli_fetch_assoc($images_res);
+                        echo '<img src="../uploads/' . ($image['nom_image']) . '" alt="Image" class="img-fluid mb-2">';
+                    } else {
+                        echo '<img src="../assets/default.png" alt="Image par défaut" class="img-fluid mb-2">';
+                    }
+                ?>
 
-                    <?php if ($obj["date_retour"]): ?>
-                        <p class="emprunte text-danger">Emprunté jusqu'au : <?= $obj["date_retour"] ?></p>
-                    <?php else: ?>
-                        <p class="dispo text-success">Disponible</p>
-                    <?php endif; ?>
-                </div>
-            </a>
-        <?php endwhile; ?>
-    </section>
+                <?php if ($obj["date_retour"]): ?>
+                    <p class="emprunte text-danger">Emprunté jusqu'au : <?= $obj["date_retour"] ?></p>
+                <?php else: ?>
+                    <p class="dispo text-success">Disponible</p>
+                    <a href="emprunter.php?id=<?= $obj["id_objet"] ?>" class="btn btn-sm btn-success w-100">Emprunter</a>
+                <?php endif; ?>
+
+                <a href="details_objets.php?id=<?= $obj["id_objet"] ?>" class="btn btn-outline-primary btn-sm w-100 mt-2">Voir détails</a>
+            </div>
+        </div>
+    <?php endwhile; ?>
+</section>
 
 </body>
 </html>
