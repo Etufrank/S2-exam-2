@@ -15,91 +15,94 @@ $cat_res = getCategories();
 <head>
     <meta charset="UTF-8">
     <title>Liste des objets</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/liste.css">
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="../index.php">S2 Projet</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarS2">
+    <a class="navbar-brand" href="../index.php">S2 Projet</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarS2" aria-controls="navbarS2" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarS2">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="liste_objets.php"><i class="bi bi-box-seam"></i> Objets</a></li>
-        <li class="nav-item"><a class="nav-link" href="ajout.php"><i class="bi bi-plus-circle"></i> Ajouter</a></li>
-        <li class="nav-item"><a class="nav-link" href="fiche_membre.php"><i class="bi bi-person-circle"></i> Mon profil</a></li>
-        <li class="nav-item"><a class="nav-link" href="chercher_membre.php"><i class="bi bi-search"></i> Membres</a></li>
-        <li class="nav-item"><a class="nav-link" href="../index.php"><i class="bi bi-box-arrow-right"></i> Déconnexion</a></li>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="liste_objets.php">Liste des objets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ajout.php">Ajouter un objet</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="fiche_membre.php">Mon profil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="chercher_membre.php">Chercher Un Membre</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../index.php">Déconnexion</a>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
 
-<main class="container my-5">
-    <h1 class="mb-4 text-center">📦 Liste des objets</h1>
+    <h1 class="mb-4">Liste des objets</h1>
 
-    <form method="GET" class="row g-3 align-items-end mb-5 bg-light p-4 rounded shadow-sm">
-        <div class="col-md-4">
-            <label for="categorie" class="form-label">Catégorie :</label>
+    <form method="GET" class="mb-4 d-flex gap-3 flex-wrap align-items-end">
+        <div>
+            <label for="categorie">Catégorie :</label>
             <select name="categorie" id="categorie" class="form-select">
-                <option value="">-- Toutes --</option>
+                <option value="">-- Toutes les catégories --</option>
                 <?php while ($cat = mysqli_fetch_assoc($cat_res)): ?>
                     <option value="<?= $cat['id_categorie'] ?>" <?= ($filtre_categorie == $cat['id_categorie']) ? 'selected' : '' ?>>
-                        <?= ($cat['nom_categorie']) ?>
+                        <?= htmlspecialchars($cat['nom_categorie']) ?>
                     </option>
                 <?php endwhile; ?>
             </select>
         </div>
 
-        <div class="col-md-4">
-            <label for="nom" class="form-label">Nom de l’objet :</label>
-            <input type="text" name="nom" id="nom" class="form-control" value="<?= ($filtre_nom) ?>">
+        <div>
+            <label for="nom">Nom de l’objet :</label>
+            <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($filtre_nom) ?>" class="form-control">
         </div>
 
-        <div class="col-md-3">
-            <div class="form-check mt-4">
-                <input type="checkbox" name="disponible" id="disponible" class="form-check-input" <?= $filtre_dispo ? "checked" : "" ?>>
-                <label class="form-check-label" for="disponible">Disponibles uniquement</label>
-            </div>
+        <div class="form-check mt-4">
+            <input type="checkbox" name="disponible" id="disponible" class="form-check-input" <?= $filtre_dispo ? "checked" : "" ?>>
+            <label class="form-check-label" for="disponible">Disponible uniquement</label>
         </div>
 
-        <div class="col-md-1 text-end">
-            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+        <div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
         </div>
     </form>
 
-    <div class="row">
+    <section>
         <?php while ($obj = mysqli_fetch_assoc($res)): ?>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
+            <a href="details_objets.php?id=<?= $obj["id_objet"] ?>" class="objet-link text-decoration-none text-dark">
+                <div class="objet border p-3 mb-3 rounded">
+                    <h2><?= htmlspecialchars($obj["nom_objet"]) ?></h2>
+                    <p>Catégorie : <?= htmlspecialchars($obj["nom_categorie"]) ?></p>
+
                     <?php 
                         $images_res = getImagesObjet($obj["id_objet"]);
                         if ($images_res && mysqli_num_rows($images_res) > 0) {
                             $image = mysqli_fetch_assoc($images_res);
-                            echo '<img src="../uploads/' . ($image['nom_image']) . '" class="card-img-top" alt="Image">';
+                            echo '<img src="../uploads/' . htmlspecialchars($image['nom_image']) . '" alt="Image de ' . htmlspecialchars($obj["nom_objet"]) . '" style="max-width:200px; display:block; margin-bottom:10px;">';
                         } else {
-                            echo '<img src="../assets/default.png" class="card-img-top" alt="Image par défaut">';
+                            echo '<img src="../assets/default.png" alt="Image par défaut" style="max-width:200px; display:block; margin-bottom:10px;">';
                         }
                     ?>
-                    <div class="card-body">
-                        <h5 class="card-title"><?= ($obj["nom_objet"]) ?></h5>
-                        <p class="card-text"><i class="bi bi-tag"></i> Catégorie : <?= ($obj["nom_categorie"]) ?></p>
 
-                        <?php if ($obj["date_retour"]): ?>
-                            <p class="text-danger"><i class="bi bi-x-circle"></i> Emprunté jusqu'au : <?= $obj["date_retour"] ?></p>
-                        <?php else: ?>
-                            <p class="text-success"><i class="bi bi-check-circle"></i> Disponible</p>
-                        <?php endif; ?>
-
-                        <a href="details_objets.php?id=<?= $obj["id_objet"] ?>" class="btn btn-outline-primary w-100 mt-2">Voir détails</a>
-                    </div>
+                    <?php if ($obj["date_retour"]): ?>
+                        <p class="emprunte text-danger">Emprunté jusqu'au : <?= $obj["date_retour"] ?></p>
+                    <?php else: ?>
+                        <p class="dispo text-success">Disponible</p>
+                    <?php endif; ?>
                 </div>
-            </div>
+            </a>
         <?php endwhile; ?>
-    </div>
-</main>
+    </section>
 
 </body>
 </html>
