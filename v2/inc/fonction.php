@@ -1,6 +1,6 @@
 <?php
 function connexionBDD() {
-    $host = "localhost";
+    $host = "172.60.0.15";
     $user = "ETU004223";
     $pass = "8kEa3yOe";
     $db = "db_s2_ETU004223";

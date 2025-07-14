@@ -130,6 +130,7 @@ if (!$res_emprunts) {
     <?php else: ?>
         <p>Aucun emprunt enregistre.</p>
     <?php endif; ?>
+    <a href="ajouter_image_objet.php?id=<?= $id_objet ?>" class="btn btn-secondary mb-3">Ajouter des images</a>
 
     <a href="liste_objets.php" class="btn btn-link mt-3">← Retour à la liste</a>
 </div>
