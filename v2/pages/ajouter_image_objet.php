@@ -43,6 +43,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_objet"])) {
     <link rel="stylesheet" href="../assets/css/upload.css">
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="../index.php">S2 Projet</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarS2" aria-controls="navbarS2" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarS2">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="liste_objets.php">Liste des objets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ajout.php">Ajouter un objet</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="fiche_membre.php">Mon profil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="chercher_membre.php">Chercher Un Membre</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../index.php">Déconnexion</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
     <h2>Ajouter une image à un objet</h2>
     <?= $message ?>
 

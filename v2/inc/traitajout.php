@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $res = ajouterImageObjet($id_objet, $fichier);
                 if ($res !== true) {
                     $_SESSION['message'] = "Erreur lors de l'ajout de l'image : $res";
-                    header("Location: ajout.php");
+                    header("Location: ../pages/ajout.php");
                     exit();
                 }
             }
