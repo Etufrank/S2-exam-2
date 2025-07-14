@@ -100,22 +100,55 @@ function getLastObjetId($nom, $id_categorie, $id_membre) {
     return false;
 }
 
-function ajouterImageObjet($id_objet, $fichier_image) {
+function getObjets2($categorie = "", $nom = "", $dispo = false) {
     $bdd = connexionBDD();
-    $dossier_upload = __DIR__ . '/../uploads/';
-    $nom_fichier = basename($fichier_image['name']);
-    $chemin_destination = $dossier_upload . $nom_fichier;
 
-    if (move_uploaded_file($fichier_image['tmp_name'], $chemin_destination)) {
-        $sql = "INSERT INTO S2_images_objet (id_objet, nom_image) VALUES ('$id_objet', '$nom_fichier')";
-        if (mysqli_query($bdd, $sql)) {
-            return true;
-        } else {
-            return "Erreur SQL : " . mysqli_error($bdd);
-        }
-    } else {
-        return "Erreur lors du déplacement du fichier.";
+    $sql = "SELECT o.*, c.nom_categorie, e.date_retour
+            FROM S2_objet o
+            JOIN S2_categorie_objet c ON o.id_categorie = c.id_categorie
+            LEFT JOIN S2_emprunt e ON o.id_objet = e.id_objet AND e.date_retour >= CURDATE()";
+
+    $conditions = [];
+
+    if ($categorie != "") {
+        $conditions[] = "o.id_categorie = " . intval($categorie);
     }
+
+    if ($nom != "") {
+        $conditions[] = "o.nom_objet LIKE '%" . mysqli_real_escape_string($bdd, $nom) . "%'";
+    }
+
+    if ($dispo) {
+        $conditions[] = "e.date_retour IS NULL";
+    }
+
+    if (!empty($conditions)) {
+        $sql .= " WHERE " . implode(" AND ", $conditions);
+    }
+
+    return mysqli_query($bdd, $sql);
 }
+function getInfosMembre($id_membre) {
+    $bdd = connexionBDD();
+    $sql = "SELECT * FROM S2_membre WHERE id_membre = $id_membre";
+    return mysqli_fetch_assoc(mysqli_query($bdd, $sql));
+}
+
+function getObjetsParCategorieDuMembre($id_membre) {
+    $bdd = connexionBDD();
+    $sql = "SELECT c.nom_categorie, o.nom_objet
+            FROM S2_objet o
+            JOIN S2_categorie_objet c ON o.id_categorie = c.id_categorie
+            WHERE o.id_membre = $id_membre
+            ORDER BY c.nom_categorie";
+    return mysqli_query($bdd, $sql);
+}
+function chercherMembres($nom = "") {
+    $bdd = connexionBDD();
+    $nom = mysqli_real_escape_string($bdd, $nom);
+    $sql = "SELECT * FROM S2_membre WHERE nom LIKE '%$nom%'";
+    return mysqli_query($bdd, $sql);
+}
+
 ?>
 
