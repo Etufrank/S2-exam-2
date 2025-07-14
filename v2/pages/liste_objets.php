@@ -25,7 +25,7 @@ $cat_res = getCategories();
             <option value="">-- Toutes les categories --</option>
             <?php while ($cat = mysqli_fetch_assoc($cat_res)): ?>
                 <option value="<?= $cat['id_categorie'] ?>" <?= ($filtre == $cat['id_categorie']) ? 'selected' : '' ?>>
-                    <?= ($cat['nom_categorie']) ?>
+                    <?= htmlspecialchars($cat['nom_categorie']) ?>
                 </option>
             <?php endwhile; ?>
         </select>
@@ -34,26 +34,28 @@ $cat_res = getCategories();
 
     <section>
         <?php while ($obj = mysqli_fetch_assoc($res)): ?>
-            <div class="objet">
-                <h2><?= ($obj["nom_objet"]) ?></h2>
-                <p>Categorie : <?= ($obj["nom_categorie"]) ?></p>
+            <a href="details_objet.php?id=<?= $obj["id_objet"] ?>" class="objet-link">
+                <div class="objet">
+                    <h2><?= htmlspecialchars($obj["nom_objet"]) ?></h2>
+                    <p>Catégorie : <?= htmlspecialchars($obj["nom_categorie"]) ?></p>
 
-                <?php 
-                    $images_res = getImagesObjet($obj["id_objet"]);
-                    if ($images_res && mysqli_num_rows($images_res) > 0) {
-                        $image = mysqli_fetch_assoc($images_res);
-                        echo '<img src="../uploads/' . htmlspecialchars($image['nom_image']) . '" alt="Image de ' . htmlspecialchars($obj["nom_objet"]) . '" style="max-width:200px; display:block; margin-bottom:10px;">';
-                    } else {
-                        echo '<p>Aucune image disponible</p>';
-                    }
-                ?>
+                    <?php 
+                        $images_res = getImagesObjet($obj["id_objet"]);
+                        if ($images_res && mysqli_num_rows($images_res) > 0) {
+                            $image = mysqli_fetch_assoc($images_res);
+                            echo '<img src="../uploads/' . htmlspecialchars($image['nom_image']) . '" alt="Image de ' . htmlspecialchars($obj["nom_objet"]) . '" style="max-width:200px; display:block; margin-bottom:10px;">';
+                        } else {
+                            echo '<p>Aucune image disponible</p>';
+                        }
+                    ?>
 
-                <?php if ($obj["date_retour"]): ?>
-                    <p class="emprunte">Emprunté jusqu'au : <?= ($obj["date_retour"]) ?></p>
-                <?php else: ?>
-                    <p class="dispo">Disponible</p>
-                <?php endif; ?>
-            </div>
+                    <?php if ($obj["date_retour"]): ?>
+                        <p class="emprunte">Emprunté jusqu'au : <?= $obj["date_retour"] ?></p>
+                    <?php else: ?>
+                        <p class="dispo">Disponible</p>
+                    <?php endif; ?>
+                </div>
+            </a>
         <?php endwhile; ?>
     </section>
 
