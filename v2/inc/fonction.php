@@ -79,5 +79,43 @@ function getImagesObjet($id_objet) {
     $sql = "SELECT nom_image FROM S2_images_objet WHERE id_objet = $id_objet";
     return mysqli_query($bdd, $sql);
 }
+function ajouterObjet($nom, $id_categorie, $id_membre) {
+    $bdd = connexionBDD();
+    $sql = "INSERT INTO S2_objet (nom_objet, id_categorie, id_membre) VALUES ('$nom', '$id_categorie', '$id_membre')";
+    if (mysqli_query($bdd, $sql)) {
+        
+        return true;
+    }
+    return false;
+}
+
+function getLastObjetId($nom, $id_categorie, $id_membre) {
+    $bdd = connexionBDD();
+    $sql = "SELECT id_objet FROM S2_objet WHERE nom_objet='$nom' AND id_categorie='$id_categorie' AND id_membre='$id_membre' ORDER BY id_objet DESC LIMIT 1";
+    $res = mysqli_query($bdd, $sql);
+    if ($res && mysqli_num_rows($res) > 0) {
+        $row = mysqli_fetch_assoc($res);
+        return $row['id_objet'];
+    }
+    return false;
+}
+
+function ajouterImageObjet($id_objet, $fichier_image) {
+    $bdd = connexionBDD();
+    $dossier_upload = __DIR__ . '/../uploads/';
+    $nom_fichier = basename($fichier_image['name']);
+    $chemin_destination = $dossier_upload . $nom_fichier;
+
+    if (move_uploaded_file($fichier_image['tmp_name'], $chemin_destination)) {
+        $sql = "INSERT INTO S2_images_objet (id_objet, nom_image) VALUES ('$id_objet', '$nom_fichier')";
+        if (mysqli_query($bdd, $sql)) {
+            return true;
+        } else {
+            return "Erreur SQL : " . mysqli_error($bdd);
+        }
+    } else {
+        return "Erreur lors du déplacement du fichier.";
+    }
+}
 ?>
 
